@@ -14,22 +14,24 @@
  * limitations under the License.
  */
 
-package com.example.android.hilt.util
+package com.example.android.hilt.data
 
-import android.annotation.SuppressLint
-import java.text.SimpleDateFormat
-import java.util.Date
+import java.util.LinkedList
 import javax.inject.Inject
 
-/**
- * String formatter for the log dates.
- */
-class DateFormatter @Inject constructor() {
+class LoggerInMemoryDataSource @Inject constructor() : LoggerDataSource {
 
-    @SuppressLint("SimpleDateFormat")
-    private val formatter = SimpleDateFormat("d MMM yyyy HH:mm:ss")
+    private val logs = LinkedList<Log>()
 
-    fun formatDate(timestamp: Long): String {
-        return formatter.format(Date(timestamp))
+    override fun addLog(msg: String) {
+        logs.addFirst(Log(msg, System.currentTimeMillis()))
+    }
+
+    override fun getAllLogs(callback: (List<Log>) -> Unit) {
+        callback(logs)
+    }
+
+    override fun removeLogs() {
+        logs.clear()
     }
 }
